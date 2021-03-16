@@ -1,46 +1,4 @@
 
-        /*
-        //fonction permettant d'écrire dans un fichier
-        function WriteToFile(passForm) {
-
-        fso = CreateObject("Scripting.FileSystemObject");
-        s = fso.CreateTextFile("~/Bureau/filename.txt", True);
-
-        var ville = passForm[v];
-        var lat = passForm[v].lat;
-        var lon = passForm[v].lat;
-
-        s.writeline(`Lattitude: ${passForm[v].lat}`);
-        s.writeline(`Longitude: ${passForm[v].lon}`);
-
-        s.writeline("-----------------------------<br>");
-        s.Close();
-        }
-        WriteToFile(initPoint());
-
-
-        // fonction permettant de lire les coordonnées dans un fichier
-        const readline = require('readline');
-        const fs = require('fs');
-
-        const rr = fs.createReadStream('coor.txt');
-        rr.on('readable', () => {
-          console.log(`readable: ${rr.read()}`);
-        });
-        rr.on('end', () => {
-          console.log('end');
-        });
-
-        const readInterface = readline.createInterface({
-        input: fs.createReadStream('coor.txt', 'r'),
-        output: process.stdout,
-        console: True
-        });
-        readInterface.on('line', function(line) {
-          console.log(line);
-        });*/
-
-
         // On initialise la latitude et la longitude de Lannion (centre de la carte)
         var lat = 48.73056610085155;
         var lon = -3.460834918664013;
@@ -61,34 +19,7 @@
           return Math.random() * (max - min) + min;
         }
 
-        /*// Fonction d'initialisation des points (randoms) sur la carte
-        function initPoint() {
-          for (let Point = 0; Point < 100; Point++){
-
-            // Pour la France et ses alentours:
-            //Lat = initLat(42, 51);
-            //Lon = initLon(-4, 8);
-
-            // Pour la Bretagne et ses alentours:
-            const Lat = initLat(47.97, 48.5);
-            const Lon = initLon(-4, -1);
-            let test = {
-              "id": Point,
-              "Longitude": Lon,
-              "Lattitude": Lat
-            };
-            var ville = new Object();
-            ville.id = Point;
-            ville.lat = Lat;
-            ville.lon = Lon;
-            city.push(ville);
-          }
-        }
-        // Fonction placent aléatoirement des points dans un périmetre donné
-        initPoint();*/
-
-
-
+        //fonction
         function addPolylineToMap(map) {
           var lineString = new H.geo.LineString();
 

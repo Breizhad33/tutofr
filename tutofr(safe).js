@@ -79,7 +79,8 @@
              console.log(city[ville].lon);
              var marker = L.marker([city[ville].lat, city[ville].lon]).addTo(macarte);
               // Nous ajoutons la popup. A noter que son contenu (ici la variable ville) peut être du HTML
-	            marker.bindPopup(ville);
+	            //marker.bindPopup(ville);
+              marker.bindPopup(`<b> ${ville} <b><br>Lattitude: ${city[ville].lat} <br>Longitude: ${city[ville].lon} <br>Altitude: `);
               //markerClusters.addLayer(marker); // Nous ajoutons le marqueur aux groupes
   	       }
 

@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"tutofr.js":[function(require,module,exports) {
+})({"tutofr(safe).js":[function(require,module,exports) {
 // On initialise la latitude et la longitude de Lannion (centre de la carte)
 var lat = 48.73056610085155;
 var lon = -3.460834918664013;
@@ -125,7 +125,9 @@ var macarte = null;
 var markerClusters; // Servira à stocker les groupes de marqueurs
 // Nous initialisons un tableau city qui contiendra les "ville"
 
-var city = [];
+var city = []; // Test function initPoint
+//var tests = [];
+//test[0] = Lat= 48.852969,Lon= 2.349903;
 
 function initLat(min, max) {
   //function initLatitude(min, max)
@@ -139,35 +141,32 @@ function initLon(min, max) {
   min = min;
   max = max;
   return Math.random() * (max - min) + min;
-} //fonction
+} // Fonction d'initialisation des points (randoms) sur la carte
 
 
-function addPolylineToMap(map) {
-  var lineString = new H.geo.LineString(); //Coordonnées de la zone que l'on veut délimité pour les points
+function initPoint() {
+  for (var point = 0; point < 10; point++) {
+    // Pour la France et ses alentours:
+    //Lat = initLat(42, 51);
+    //Lon = initLon(-4, 8);
+    // Pour la Bretagne et ses alentours:
+    Lat = initLat(47.97, 48.5);
+    Lon = initLon(-4, -1);
+    var test = {
+      "id": point,
+      "Longitude": Lon,
+      "Lattitude": Lat
+    };
+    var ville = new Object();
+    ville.id = point;
+    ville.lat = Lat;
+    ville.lon = Lon;
+    city.push(ville);
+    city.push(ville);
+  }
+}
 
-  lineString.pushPoint({
-    lat: 53.3477,
-    lng: -6.2597
-  });
-  lineString.pushPoint({
-    lat: 51.5008,
-    lng: -0.1224
-  });
-  lineString.pushPoint({
-    lat: 48.8567,
-    lng: 2.3508
-  });
-  lineString.pushPoint({
-    lat: 52.5166,
-    lng: 13.3833
-  });
-  map.addObject(new H.map.Polyline(lineString, {
-    style: {
-      lineWidth: 4
-    }
-  }));
-} // Fonction d'initialisation de la carte
-
+initPoint(); // Fonction d'initialisation de la carte
 
 function initMap() {
   // Créer l'objet "macarte" et l'insèrer dans l'élément HTML qui a l'ID "map"
@@ -186,11 +185,11 @@ function initMap() {
     color: 'red',
     fillColor: '#f03',
     fillOpacity: 0.5,
-    radius: 500 //Radius = Rayon "Maison"
-
+    //Radius = Rayon "Maison"
+    radius: 500
   }).addTo(macarte); //test pour ajout dans tableau city
 
-  for (var ville in city) {
+  for (ville in city) {
     // Nous définissons l'icône à utiliser pour le marqueur, sa taille affichée (iconSize), sa position (iconAnchor) et le décalage de son ancrage (popupAnchor)
     var myIcon = L.icon({
       iconSize: [50, 50],
@@ -200,9 +199,9 @@ function initMap() {
     console.log(city[ville].lat);
     console.log(city[ville].lon);
     var marker = L.marker([city[ville].lat, city[ville].lon]).addTo(macarte); // Nous ajoutons la popup. A noter que son contenu (ici la variable ville) peut être du HTML
+    //marker.bindPopup(ville);
 
-    marker.bindPopup("<b> ".concat(ville, " <b><br>Lattitude: ").concat(city[ville].lat, " <br>Longitude: ").concat(city[ville].lon, " <br>Altitude: "));
-    markerClusters.addLayer(marker); // Nous ajoutons le marqueur aux groupes
+    marker.bindPopup("<b> ".concat(ville, " <b><br>Lattitude: ").concat(city[ville].lat, " <br>Longitude: ").concat(city[ville].lon, " <br>Altitude: ")); //markerClusters.addLayer(marker); // Nous ajoutons le marqueur aux groupes
   }
 
   macarte.addLayer(markerClusters); // Nous ajoutons la popup. A noter que son contenu (ici la variable ville) peut être du HTML
@@ -212,11 +211,7 @@ function initMap() {
 
 window.onload = function () {
   // Fonction d'initialisation qui s'exécute lorsque le DOM est chargé
-  window.addEventListener('resize', function () {
-    return map.getView().resize();
-  });
   initMap();
-  addPolylineToMap(map);
 };
 },{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -246,7 +241,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38761" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "41799" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -422,5 +417,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","tutofr.js"], null)
-//# sourceMappingURL=/tutofr.957025cd.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","tutofr(safe).js"], null)
+//# sourceMappingURL=/tutofr(safe).35f66490.js.map
