@@ -118,26 +118,20 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"tutofr(safe).js":[function(require,module,exports) {
-// On initialise la latitude et la longitude de Lannion (centre de la carte)
-var lat = 48.73056610085155;
-var lon = -3.460834918664013;
+// On initialise la latitude et la longitude de l'habitation du client (centre de la carte)
+// Au préalable séléctionné/donné par l'utilisateur, dans le cas contraire:
+// Se positionner sur Paris.
+var lat_home = 48.73056610085155;
+var lon_home = -3.460834918664013;
 var macarte = null;
 var markerClusters; // Servira à stocker les groupes de marqueurs
 // Nous initialisons un tableau city qui contiendra les "ville"
+//list = nombre d'enregistrement fait par le GPS encore en mémoire
 
-var city = []; // Test function initPoint
-//var tests = [];
-//test[0] = Lat= 48.852969,Lon= 2.349903;
+var list = 10;
+var city = new Array(list); //fonction donnant un nombre random entre un min et un max
 
-function initLat(min, max) {
-  //function initLatitude(min, max)
-  min = min;
-  max = max;
-  return Math.random() * (max - min) + min;
-}
-
-function initLon(min, max) {
-  //function initLongitude(min, max)
+function initCoord(min, max) {
   min = min;
   max = max;
   return Math.random() * (max - min) + min;
@@ -147,21 +141,23 @@ function initLon(min, max) {
 function initPoint() {
   for (var point = 0; point < 10; point++) {
     // Pour la France et ses alentours:
-    //Lat = initLat(42, 51);
-    //Lon = initLon(-4, 8);
+    //Lat = initCoord(42, 51);
+    //Lon = initCoord(-4, 8);
     // Pour la Bretagne et ses alentours:
-    Lat = initLat(47.97, 48.5);
-    Lon = initLon(-4, -1);
+    Lat = initCoord(47.97, 48.5);
+    Lon = initCoord(-4, -1);
+    Alt = initCoord(-4, 20);
     var test = {
       "id": point,
       "Longitude": Lon,
-      "Lattitude": Lat
+      "Lattitude": Lat,
+      "Altitude": Alt
     };
     var ville = new Object();
     ville.id = point;
     ville.lat = Lat;
     ville.lon = Lon;
-    city.push(ville);
+    ville.alt = Alt;
     city.push(ville);
   }
 }
@@ -170,7 +166,7 @@ initPoint(); // Fonction d'initialisation de la carte
 
 function initMap() {
   // Créer l'objet "macarte" et l'insèrer dans l'élément HTML qui a l'ID "map"
-  macarte = L.map('map').setView([lat, lon], 11);
+  macarte = L.map('map').setView([lat_home, lon_home], 11);
   markerClusters = L.markerClusterGroup(); // Nous initialisons les groupes de marqueurs
   // Leaflet ne récupère pas les cartes (tiles) sur un serveur par défaut. Nous devons lui préciser où nous souhaitons les récupérer. Ici, openstreetmap.fr
 
@@ -198,10 +194,26 @@ function initMap() {
     });
     console.log(city[ville].lat);
     console.log(city[ville].lon);
-    var marker = L.marker([city[ville].lat, city[ville].lon]).addTo(macarte); // Nous ajoutons la popup. A noter que son contenu (ici la variable ville) peut être du HTML
-    //marker.bindPopup(ville);
+    console.log(city[ville].alt); //for (var i = 0; i < list; i++) {
+    //Création du tracé GPS
 
-    marker.bindPopup("<b> ".concat(ville, " <b><br>Lattitude: ").concat(city[ville].lat, " <br>Longitude: ").concat(city[ville].lon, " <br>Altitude: ")); //markerClusters.addLayer(marker); // Nous ajoutons le marqueur aux groupes
+    L.Routing.control({
+      waypoints: [L.latLng(48.56036426785153, -3.1599197957359926), //L.latLng(ville[i].lat, ville[i].lon),
+      L.latLng(48.51278434587372, -2.779401099923159) //L.latLng(ville[i+1].lat, ville[i+1].lon)
+      ],
+      // Class "animate" permet de régler (en CSS) certain détail de l'animation (vitesse d'exécution, temps avant exécution, coleur, etc...)
+      lineOptions: {
+        styles: [{
+          className: 'animate'
+        }]
+      },
+      draggableWaypoints: false,
+      addWaypoints: false
+    }).addTo(macarte); //}
+
+    var marker = L.marker([city[ville].lat, city[ville].lon, city[ville].alt]).addTo(macarte); // Nous ajoutons la popup. A noter que son contenu (ici la variable ville) peut être du HTML
+
+    marker.bindPopup("<b> ".concat(ville, " <b><br>Lattitude: ").concat(city[ville].lat, " <br>Longitude: ").concat(city[ville].lon, " <br>Altitude: ").concat(city[ville].alt, " MAMSL")); //markerClusters.addLayer(marker); // Nous ajoutons le marqueur aux groupes
   }
 
   macarte.addLayer(markerClusters); // Nous ajoutons la popup. A noter que son contenu (ici la variable ville) peut être du HTML
@@ -241,7 +253,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "41799" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "37849" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
