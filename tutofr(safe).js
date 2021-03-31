@@ -7,8 +7,8 @@
         var markerClusters; // Servira à stocker les groupes de marqueurs
 
         // Nous initialisons un tableau city qui contiendra les "ville"
-        //list = nombre d'enregistrement fait par le GPS encore en mémoire
-        var list = 10;
+        //list = nombre d'enregistrement fait par le GPS, sur la BDD, encore accessible
+        var list = 0;
         let city = new Array(list);
 
         //fonction donnant un nombre random entre un min et un max
@@ -18,7 +18,7 @@
           return Math.random() * (max - min) + min;
         }
 
-        // Fonction d'initialisation des points (randoms) sur la carte
+        // Fonction d'initialisation de points (randoms) sur la carte
         function initPoint() {
           for (let point = 0; point < 10; point++){
 
@@ -68,6 +68,26 @@
              radius: 500
           }).addTo(macarte);
 
+          for (var i = 0; i < city.length-1; i++) {
+          //Création du tracé GPS
+            L.Routing.control({
+              waypoints:[
+                //L.latLng(48.56036426785153, -3.1599197957359926),
+                L.latLng(city[i].lat, city[i].lon),
+                //L.latLng(48.51278434587372, -2.779401099923159)],
+                L.latLng(city[i+1].lat, city[i+1].lon)],
+                 // router: new L.Routing.OSRMv1({
+                 //   serviceUrl: 'http://localhost:5000'  // Permet  http://localhost:5000
+                 // }),
+              // Class "animate" permet de régler (en CSS) certain détail de l'animation (vitesse d'exécution, temps avant exécution, coleur, etc...)
+              lineOptions: {
+                styles: [{className: 'animate'}]
+              },
+              draggableWaypoints: true,
+              addWaypoints: false
+            }).addTo(macarte);
+          }
+
            //test pour ajout dans tableau city
            for (ville in city) {
              // Nous définissons l'icône à utiliser pour le marqueur, sa taille affichée (iconSize), sa position (iconAnchor) et le décalage de son ancrage (popupAnchor)
@@ -79,29 +99,9 @@
              console.log(city[ville].lat);
              console.log(city[ville].lon);
              console.log(city[ville].alt);
-
-             //for (var i = 0; i < list; i++) {
-               //Création du tracé GPS
-               L.Routing.control({
-                 waypoints: [
-                   L.latLng(48.56036426785153, -3.1599197957359926),
-                   //L.latLng(ville[i].lat, ville[i].lon),
-                   L.latLng(48.51278434587372, -2.779401099923159)
-                   //L.latLng(ville[i+1].lat, ville[i+1].lon)
-                 ],
-                 // Class "animate" permet de régler (en CSS) certain détail de l'animation (vitesse d'exécution, temps avant exécution, coleur, etc...)
-                 lineOptions: {
-                   styles: [{className: 'animate'}]
-                 },
-                 draggableWaypoints: false,
-                 addWaypoints: false
-               }).addTo(macarte);
-             //}
-
              var marker = L.marker([city[ville].lat, city[ville].lon, city[ville].alt]).addTo(macarte);
              // Nous ajoutons la popup. A noter que son contenu (ici la variable ville) peut être du HTML
              marker.bindPopup(`<b> ${ville} <b><br>Lattitude: ${city[ville].lat} <br>Longitude: ${city[ville].lon} <br>Altitude: ${city[ville].alt} MAMSL`);
-             //markerClusters.addLayer(marker); // Nous ajoutons le marqueur aux groupes
           }
            macarte.addLayer(markerClusters);
            // Nous ajoutons la popup. A noter que son contenu (ici la variable ville) peut être du HTML
